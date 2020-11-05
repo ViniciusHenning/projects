@@ -1,11 +1,20 @@
 ## THIS FUNCTION RETURNS THE BURNING DISTRIBUTION IN THE BRAZIL MAP FOR AN SPECIFIC BIOME AND YEAR
 
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import datetime
+import matplotlib.dates as mdates
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+import streamlit as st
+import time
 
-def burning_map_brazil(ax, year, biome, cbar_location = [0.92, 0.1, 0.015, 0.78]):
+def burning_map_brazil(ax, year, biome, fig, cbar_location = [0.92, 0.1, 0.015, 0.78]):
         
-    df_map = pd.read_csv('cleaned-datasets/data-map.csv')
+    df_map = pd.read_csv('../cleaned-datasets/data-map.csv')
     
-    filename = 'cleaned-datasets/timeseries{}{}.csv'.format(str(year), biome)
+    filename = '../cleaned-datasets/timeseries{}{}.csv'.format(str(year), biome)
     
     df = pd.read_csv(filename, parse_dates = [0], usecols = ['bioma', 'latitude', 'longitude'])
     
@@ -31,8 +40,6 @@ def burning_map_brazil(ax, year, biome, cbar_location = [0.92, 0.1, 0.015, 0.78]
     
     ax.set_xlabel('Latitude', fontsize = 14)
     ax.set_ylabel('Longitude', fontsize = 14)
-
-    mpl.rcParams['agg.path.chunksize'] = 10000
 
     plot = ax.scatter(x = longitude, y = latitude, c = number_events, cmap = 'magma_r')
     

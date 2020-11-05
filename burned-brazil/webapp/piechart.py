@@ -1,5 +1,15 @@
 ## THE CORRESPONDING PIE CHART
 
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import datetime
+import matplotlib.dates as mdates
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+import streamlit as st
+import time
+
 def pie_chart_year(ax, year, biome):
     
     biomes = ['Amazonia', 'Mata Atlantica', 'Cerrado', 'Pampa', 'Caatinga', 'Pantanal']
@@ -7,7 +17,7 @@ def pie_chart_year(ax, year, biome):
     
     ## COUNTING THE NUMBER OF BURNING EVENTS PER BIOME FOR AN SPECIFIC YEAR    
     for biome_for_loop in biomes:
-        filename = 'cleaned-datasets/peryear{}{}.csv'.format(str(year), biome_for_loop)
+        filename = '../cleaned-datasets/peryear{}{}.csv'.format(str(year), biome_for_loop)
         df = pd.read_csv(filename, usecols = ['riscofogo'])
         burn_ev.append(len(df.index))    
     

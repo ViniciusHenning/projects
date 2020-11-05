@@ -1,9 +1,18 @@
 ## THIS FUNCTION PLOTS THE BURNING EVENTS THROUGHOUT THE CONTRY FOR A GIVEN YEAR
 
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import datetime
+import matplotlib.dates as mdates
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+import streamlit as st
+import time
 
 def burning_given_year(year, ax1, ax2, fig):
     
-    filename = 'cleaned-datasets/entire_country{}.csv'.format(str(year))
+    filename = '../cleaned-datasets/entire_country{}.csv'.format(str(year))
     df = pd.read_csv(filename,
                      parse_dates = [0])
     
@@ -48,9 +57,7 @@ def burning_given_year(year, ax1, ax2, fig):
     ax2.set_xlabel('Latitude', fontsize = 14)
     ax2.set_ylabel('Longitude', fontsize = 14)
     
-    mpl.rcParams['agg.path.chunksize'] = 10000
-    
-    df = pd.read_csv('cleaned-datasets/data-map.csv')
+    df = pd.read_csv('../cleaned-datasets/data-map.csv')
     
     biomes = ['Amazonia', 'Mata Atlantica', 'Cerrado', 'Pampa', 'Caatinga', 'Pantanal']
     colors = ['indianred', 'yellowgreen', 'cadetblue', 'mediumpurple', 'lightsteelblue', 'bisque']

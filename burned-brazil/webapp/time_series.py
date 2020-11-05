@@ -1,10 +1,20 @@
 ## THIS FUNCTION RETURNS A TIME SERIES FOR THE BURNING EVENTS AND PRECIPITATION ALONG THE YEAR
 
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import datetime
+import matplotlib.dates as mdates
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+import streamlit as st
+import time
+
 def biome_plot(ax, year, biome, rolling_mean = 3,
                day1 = 31, day2 = 20, month1 = 7, month2 = 11, inset_location = [0.2, 0.6, .2, .2]):
     
     ## BURNED DATAFRAME FOR AN SPECIFIC BIOME
-    filename = 'cleaned-datasets/timeseries{}{}.csv'.format(str(year), biome)
+    filename = '../cleaned-datasets/timeseries{}{}.csv'.format(str(year), biome)
     df = pd.read_csv(filename, parse_dates = [0], usecols = ['data', 'precipitacao', 'riscofogo'])
     
     df_burned_biome = df[df.riscofogo == 1].copy()
