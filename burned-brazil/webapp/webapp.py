@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import datetime
 import matplotlib.dates as mdates
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
-import streamlit as st
 import time
+import streamlit as st
 
 from matplotlib.backends.backend_agg import RendererAgg
 _lock = RendererAgg.lock
