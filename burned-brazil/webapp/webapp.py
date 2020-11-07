@@ -40,7 +40,7 @@ year = st.sidebar.slider("Year", 2014, 2020)
 
 ## burning events throughout the country for a given year - 1st part ##
 
-st.write("### Burning events throughout Brazil for an specific year")
+#st.write("### Burning events throughout Brazil for an specific year")
 
 #with _lock:
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize = (16,6))
