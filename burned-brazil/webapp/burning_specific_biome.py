@@ -9,16 +9,16 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 import streamlit as st
 import time
 
-def burning_map_brazil(ax, year, biome, fig, cbar_location = [0.92, 0.1, 0.015, 0.78]):
+def burning_map_brazil(ax, year, biome, fig, cbar_location = [0.46, 0.565, 0.01, 0.315]):
         
     df_map = pd.read_csv('../cleaned-datasets/data-map.csv')
     
-    filename = '../cleaned-datasets/timeseries{}{}.csv'.format(str(year), biome)
+    filename = '../cleaned-datasets/lat_long{}{}.csv'.format(str(year), biome)
     
-    df = pd.read_csv(filename, parse_dates = [0], usecols = ['bioma', 'latitude', 'longitude'])
+    df = pd.read_csv(filename, parse_dates = [0], usecols = ['bioma', 'latitude', 'longitude', 'riscofogo'])
     
     gb_biome = df_map.groupby('bioma')
-
+    
     ## CREATING THE INFORMATION RELATED TO DESIRED BIOME
     
     df['latitude'] = df['latitude'].round(1) 
@@ -30,11 +30,11 @@ def burning_map_brazil(ax, year, biome, fig, cbar_location = [0.92, 0.1, 0.015, 
     longitude = []
     number_events = []
 
-    for info, df in gb_loc:
+    for info, dataframe in gb_loc:
         latitude.append(info[0])
         longitude.append(info[1])
-        number_events.append(len(df))
-    
+        number_events.append(len(dataframe))
+        
     ## EDITING THE AXIS
     
     ax.set_xlabel('Latitude', fontsize = 14)

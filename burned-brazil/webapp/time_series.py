@@ -14,34 +14,15 @@ def biome_plot(ax, year, biome, rolling_mean = 3,
     
     ## BURNED DATAFRAME FOR AN SPECIFIC BIOME
     filename = '../cleaned-datasets/timeseries{}{}.csv'.format(str(year), biome)
-    df = pd.read_csv(filename, parse_dates = [0], usecols = ['data', 'precipitacao', 'riscofogo'])
+    df = pd.read_csv(filename, parse_dates = [0], usecols = ['datahora', 'riscofogo'])
     
-    df_burned_biome = df[df.riscofogo == 1].copy()
+    df_prec = pd.read_csv('../../../dataset/data{}.csv'.format(year), usecols = ['precipitacao', 'bioma', 'datahora'],
+                          index_col = 'datahora', parse_dates = True)
     
-    gb_date = df_burned_biome.groupby('data')
+    df_prec = df_prec[df_prec.bioma == biome]
+    df_prec = df_prec.resample('W').mean()
     
-    date = []
-    occurrence = []
-    for date1, dataframe in gb_date:
-        date.append(date1)
-        occurrence.append(len(dataframe))
-        
-    date = pd.Series(date)
-    occurrence = pd.Series(occurrence)
-    
-    ## COUNTING THE AVERAGE OF PRECIPITATION PER BIOME PER DAY
-    
-    precipitation = []
-    date_prec = []
-    gb_date_all = df.groupby('data')
-
-    for date1, dataframe in gb_date_all:
-        mean_prec = dataframe['precipitacao'].mean()
-        date_prec.append(date1)
-        precipitation.append('%.2f'%mean_prec)
-        
-    precipitation = pd.Series(precipitation)
-    date_prec = pd.Series(date_prec)    
+    #print(df_prec)
     
     ## PLOTTING SECTION ##
     
@@ -61,13 +42,13 @@ def biome_plot(ax, year, biome, rolling_mean = 3,
     
     ax.axvspan(x1, x2, color='gray', alpha=0.2, lw=0)
 
-    ax.plot(date, occurrence.rolling(window = rolling_mean).mean(),
+    ax.plot(df.datahora, df.riscofogo,
     c = 'salmon')
     
     ax_inset = plt.axes(inset_location)
     ax_inset.set_xlim(datetime.datetime(year,1,1), datetime.datetime(year, 12, 31))
     ax_inset.xaxis.set_major_formatter(mdates.DateFormatter("%b"))
-    ax_inset.plot(date_prec, precipitation.rolling(window = 4).mean())
+    ax_inset.plot(df_prec.index, df_prec.precipitacao)
     
     
     
