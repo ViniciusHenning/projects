@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import datetime
 import matplotlib.dates as mdates
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
-import streamlit as st
+#import streamlit as st
 import time
 
 
@@ -15,15 +15,15 @@ def several_years_biome(years, biome, ax1, ax2, fig):
     colors = color_options[:len(years)]
     color_dict = dict(zip(years, colors))
     
-    df_all_burned = pd.DataFrame(columns = ['data', 'bioma', 'ano', 'day_month'])
+    df_all_burned = pd.DataFrame(columns = ['datahora', 'bioma', 'ano', 'day_month'])
     
     for year in years:
-        df = pd.read_csv('cleaned-datasets/peryear{}{}.csv'.format(year, biome),
-                         usecols = ['data', 'bioma', 'ano'], parse_dates = [0])
-        df['day_month'] = df['data'].dt.strftime('%m-%d')
-        df_all_burned = df_all_burned.append(df, ignore_index = True)
+        df = pd.read_csv('cleaned-datasets/timeseries{}{}.csv'.format(year, biome), usecols = ['datahora', 'bioma'], parse_dates = True)
+		df['day_month'] = df['datahora'].dt.strftime('%m-%d')
+		df['ano'] = df['datahora'].year
+	    df_all_burned = df_all_burned.append(df, ignore_index = True)
    
-    df_all_burned.set_index('data', inplace = True)
+    df_all_burned.set_index('datahora', inplace = True)
 
     df_all_burned.groupby(['ano', 'day_month']).count().unstack(level = 0)\
                     .plot(figsize = (14,6), ax = ax1, color = colors)
