@@ -1,7 +1,7 @@
 import pandas as pd
+import streamlit as st
 from statsmodels.tsa.seasonal import STL
 import seaborn as sns
-import streamlit as st
 import matplotlib.pyplot as plt
 from ts import AnomalyDetection
 import download_link
