@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from statsmodels.tsa.seasonal import STL
@@ -33,11 +32,13 @@ if file is not None:
     except:
         df = pd.read_excel(file, parse_dates = True)
 
-st.sidebar.header('Choose the datetime column')
-date_column = st.sidebar.radio('Columns', list(df.columns))
+if file is not None:
+	st.sidebar.header('Choose the datetime column')
+	date_column = st.sidebar.radio('Columns', list(df.columns))
 
-df = df.set_index(date_column)
-df.index = pd.to_datetime(df.index)
+	df = df.set_index(date_column)
+	df.index = pd.to_datetime(df.index)
+
 
 st.write('## Choose the options that you want to check regarding the anomalies')
 
@@ -49,29 +50,32 @@ option_plot = st.selectbox('Please select one of the options below',
                            'The corrected timeseries after the handling the anomalies'])
 options_0 = ['Seasonal, Trend and residuals decomposition',
            'The timeseries after removing the residuals']
+
 if option_plot not in options_0:
-    n_sigma = st.slider('Choose the number of standard deviations to be used', min_value = 1., max_value = 3.5, step = 0.5, value = 3.)
+	n_sigma = st.slider('Choose the number of standard deviations to be used', min_value = 1., max_value = 3.5, step = 0.5, value = 3.)
+
+corrected_dataframe = None
 
 if file is not None:
     try:
-        ts = AnomalyDetection(df, frequency)
-        corrected_dataframe = ts.corrected_timeseries()
+        ad = AnomalyDetection(df, frequency)
+        corrected_dataframe = ad.corrected_timeseries(n_sigma)
 
         if option_plot == 'Seasonal, Trend and residuals decomposition':
-            st.pyplot(ts.decomposition())
+            st.pyplot(ad.decomposition())
         elif option_plot == 'The timeseries after removing the residuals':
-            st.pyplot(ts.seasonal_trend())
+            st.pyplot(ad.seasonal_trend())
         elif option_plot == 'Residual analysis':
-            st.pyplot(ts.residuals_analysis(n_sigma))
+            st.pyplot(ad.residuals_analysis(n_sigma))
         elif option_plot == 'Anomaly points in the timeseries':
-            st.pyplot(ts.anomaly_points_timeseries(n_sigma))
+            st.pyplot(ad.anomaly_points_timeseries(n_sigma))
         else:
-            st.pyplot(ts.corrected_timeseries_plot(n_sigma))
+            st.pyplot(ad.corrected_timeseries_plot(n_sigma))
     except Exception as e:
         print(e)
 
 if corrected_dataframe is not None:
-    st.write('# If you wish to downaload the corrected dataset click this button')
+    st.write('# If you wish to downaload the corrected dataset click the button below')
 
     tmp_download_link = download_link.download_button(corrected_dataframe, 'corrected_dataframe.csv', 'Click here to download it')
     st.markdown(tmp_download_link, unsafe_allow_html=True)
