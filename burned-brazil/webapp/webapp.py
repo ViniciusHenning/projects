@@ -30,7 +30,7 @@ st.write("## **Single year analysis**")
 
 st.sidebar.write("# **Single year analysis**")
 
-year = st.sidebar.slider("Year", 2014, 2020)
+year = st.sidebar.slider("Year", 2014, 2019)
 
 
 
