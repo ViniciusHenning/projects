@@ -1,4 +1,5 @@
 *.csv
-.ipynb_checkpoints/
 __pycache__/
-.ipynb_checkpoints/predictive-model-checkpoint.ipynb
+.ipynb_checkpoints/
+nasa-data.ipynb
+
