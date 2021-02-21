@@ -1,9 +1,8 @@
 class FireBrazil:
-    def __init__(self, year, ax):
+    def __init__(self, year):
         self.year = year
-        self.ax = ax
 
-    def fire_map_dist(self):
+    def fire_map_dist(self, ax):
         ## getting the dataframe and risk of fire = 1
 
         df = dict_year[self.year].drop(columns = ['bioma', 'precipitacao'])
@@ -37,7 +36,7 @@ class FireBrazil:
 
         return ax, scatter
 
-    def biomes_distribution(self):
+    def biomes_distribution(self, ax):
         ## Looping through the biomes
         for biome_name, df in gb_biome:
             ax.plot(df.longitude, df.latitude, marker = '*',
@@ -50,7 +49,7 @@ class FireBrazil:
 
         return ax
 
-    def pie_chart_year(self, biome):
+    def pie_chart_year(self, biome, ax):
 
         biomes = ['Amazonia', 'Mata Atlantica', 'Cerrado', 'Pampa', 'Caatinga', 'Pantanal']
         fire_biome = []
@@ -84,7 +83,7 @@ class FireBrazil:
 
         return ax
     
-    def fire_biome(self, biome):
+    def fire_biome(self, biome, ax):
         ## Looping through the biomes
         for biome_name, df in gb_biome:
             if biome_name != biome:
@@ -118,7 +117,7 @@ class FireBrazil:
 
         return ax, plot
 
-    def timeseries_year_biome(self, biome, day1 = 0, day2 = 0, month1 = 0, month2 = 0, position = [0.2, 0.6, .2, .2]):
+    def timeseries_year_biome(self, biome, ax, day1 = 0, day2 = 0, month1 = 0, month2 = 0, position = [0.2, 0.6, .2, .2]):
         df = dict_year[self.year][['riscofogo', 'precipitacao', 'bioma']].copy()
 
         # electing the chosen biome
