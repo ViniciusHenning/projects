@@ -35,7 +35,6 @@ class AnomalyDetection:
 
         plt.gcf().autofmt_xdate()
         plt.tight_layout()
-        plt.show()
         return fig
 
     def seasonal_trend(self):
@@ -50,7 +49,6 @@ class AnomalyDetection:
 
         plt.gcf().autofmt_xdate()
         plt.legend()
-        plt.show()
         return fig
 
     def residuals_analysis(self, n_sigma = 3):
@@ -76,7 +74,6 @@ class AnomalyDetection:
         plt.gcf().autofmt_xdate()
         plt.legend()
         plt.tight_layout()
-        plt.show()
         return fig
 
     def anomaly_points_timeseries(self, n_sigma = 3):
@@ -101,7 +98,6 @@ class AnomalyDetection:
 
         plt.gcf().autofmt_xdate()
         plt.legend()
-        plt.show()
         return fig
 
     def corrected_timeseries(self, n_sigma = 3):
@@ -137,6 +133,4 @@ class AnomalyDetection:
 
         plt.gcf().autofmt_xdate()
         plt.legend(fontsize = 12)
-
-        plt.show()
         return fig
