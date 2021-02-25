@@ -53,15 +53,20 @@ st.subheader('Choose an **year** to be analyzed')
 
 year = st.slider('Years', min_value = 2014, max_value = 2020) ## Getting the year by the use
 
+fire_brazil_loc = FireBrazil(dict_year_loc[year], year)
+st.write('### The fire distribution in Brazil during {}'.format(year))
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize = (16,6))
+
+@st.cache(suppress_st_warning = True)
+def biomes_distribution(dfmap, ax1):
+	return fire_brazil_loc.biomes_distribution(ax1, dfmap)	
+
 @st.cache(suppress_st_warning=True)
-def first_figure(year):
-	fire_brazil_loc = FireBrazil(dict_year_loc[year], year)
-	st.write('### The fire distribution in Brazil during {}'.format(year))
-	fig, (ax1, ax2) = plt.subplots(1, 2, figsize = (16,6))
-	fire_brazil_loc.biomes_distribution(ax1, dfmap)
+def fire_dist_brazil(year):
 	fire_map = fire_brazil_loc.fire_map_dist(ax2)
 	plt.colorbar(fire_map[1], ax = ax2)
-	fig1 = st.pyplot(fig)
+
+fig1 = st.pyplot(fig)
 
 
 first_figure(year)
