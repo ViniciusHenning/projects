@@ -5,10 +5,9 @@ class FireBrazil:
     def __init__(self, dataframe, year):
         self.dataframe = dataframe
         self.year = year
-
+        
     def fire_map_dist(self, ax):
-        ## getting the dataframe and risk of fire = 1
-        df = self.dataframe[self.dataframe.riscofogo == 1].round(0).copy()
+        df = self.dataframe.copy().drop(columns = ['bioma']).round(0)
 
         ## Grouping by latitude, longitude and counting the number of fire events
         fire_loc_gb = df.groupby(['latitude', 'longitude'])
@@ -20,14 +19,10 @@ class FireBrazil:
         for info, dataframe in fire_loc_gb:
             lat.append(info[0])
             long.append(info[1])
-            number_events.append(len(dataframe))
+            number_events.append(dataframe.riscofogo.sum())
 
         ## Creating the dataframe with these information
-        df_fire_loc = pd.DataFrame()
-
-        df_fire_loc['latitude'] = lat
-        df_fire_loc['longitude'] = long
-        df_fire_loc['number_events'] = number_events
+        df_fire_loc = pd.DataFrame({'latitude' : lat, 'longitude' : long, 'number_events' : number_events})
 
         scatter = ax.scatter(x = df_fire_loc.longitude, y = df_fire_loc.latitude,
                              c = df_fire_loc.number_events/1000,
@@ -47,6 +42,7 @@ class FireBrazil:
         biomes = ['Amazonia', 'Mata Atlantica', 'Cerrado', 'Pampa', 'Caatinga', 'Pantanal']
         colors = ['indianred', 'yellowgreen', 'cadetblue', 'mediumpurple', 'lightsteelblue', 'bisque']
         color_dict = dict(zip(biomes, colors))
+        
         ## Looping through the biomes
         for biome_name, df in gb_biome:
             ax.plot(df.longitude, df.latitude, marker = '*',
@@ -62,16 +58,15 @@ class FireBrazil:
     def pie_chart_year(self, biome, ax):
         biomes = ['Amazonia', 'Mata Atlantica', 'Cerrado', 'Pampa', 'Caatinga', 'Pantanal']
         fire_biome = []
-        df = self.dataframe[self.dataframe.riscofogo == 1][['riscofogo', 'bioma']].round(0).copy()
 
-
+        df = self.dataframe[['bioma', 'riscofogo']].copy()
+        
         ## COUNTING THE NUMBER OF BURNING EVENTS PER BIOME FOR AN SPECIFIC YEAR
-
         for biome_for in biomes:
-            fire_biome.append(len(df[df.bioma == biome_for]))
+            total_events_biome = (df[df.bioma == biome_for]).riscofogo.sum()
+            fire_biome.append(total_events_biome)
 
         ## EXPLODING THE DESIRED BIOME
-
         index = biomes.index(biome)
         explode = [0, 0, 0, 0.1, 0, 0]
         explode[index] = 0.1
@@ -90,18 +85,15 @@ class FireBrazil:
         ax.add_patch(centre_circle)
 
         return ax
-
-
-
-    def fire_biome(self, biome, ax, df2014):
-        df_biome = df2014[['bioma', 'latitude', 'longitude']].copy().round(1)
-        df_biome = df_biome.drop_duplicates(subset = ['latitude', 'longitude'])
-
+    
+    def fire_biome(self, biome, ax, dfmap):
+        df_biome = dfmap.copy()
         gb_biome = df_biome.groupby('bioma')
 
         biomes = ['Amazonia', 'Mata Atlantica', 'Cerrado', 'Pampa', 'Caatinga', 'Pantanal']
         colors = ['indianred', 'yellowgreen', 'cadetblue', 'mediumpurple', 'lightsteelblue', 'bisque']
         color_dict = dict(zip(biomes, colors))
+        
         ## Looping through the biomes
         for biome_name, df in gb_biome:
             if biome_name != biome:
@@ -114,9 +106,8 @@ class FireBrazil:
         ax.legend(loc = 'lower left')
 
         ## Plotting the specified biome
-
-        df = self.dataframe[(self.dataframe.riscofogo == 1) & (self.dataframe.bioma == biome)].copy()
-        df = df[['latitude', 'riscofogo', 'longitude', 'bioma']].copy().round(1)
+        df = self.dataframe[['latitude', 'riscofogo', 'longitude', 'bioma']].copy()
+        df = df[df.bioma == biome].copy()
 
         gb_loc = df.groupby(['latitude', 'longitude'])
 
@@ -124,10 +115,10 @@ class FireBrazil:
         longitude = []
         number_events = []
 
-        for info, dataframe in gb_loc:
+        for info, df_for in gb_loc:
             latitude.append(info[0])
             longitude.append(info[1])
-            number_events.append(dataframe.riscofogo.sum())
+            number_events.append(df_for.riscofogo.sum())
 
         ax.set_xlabel('Latitude')
         ax.set_ylabel('Longitude')
@@ -136,19 +127,18 @@ class FireBrazil:
 
         return ax, plot
 
-
     def timeseries_year_biome(self, biome, ax, day1 = 0, day2 = 0, month1 = 0, month2 = 0, position = [0.2, 0.6, .2, .2]):
         df = self.dataframe[['riscofogo', 'precipitacao', 'bioma']].copy()
+
         # selecting the chosen biome
         df = df[df.bioma == biome]
         df = df.drop(columns = 'bioma')
 
         # fire vector
-        df_fire = df[df['riscofogo'] == 1]['riscofogo'].copy()
-        df_fire = df_fire.resample('D').sum()
+        df_fire = df[['riscofogo']]
 
         # precipitation vector
-        df_prec = df['precipitacao'].resample('D').mean()
+        df_prec = df[['precipitacao']]
 
         ### PLOTTING SECTION ###
 
