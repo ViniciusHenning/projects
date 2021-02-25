@@ -17,20 +17,31 @@ st.title('Fire events in Brazil app')
 
 @st.cache
 def data(condition):
-    df2014 = pd.read_csv('../datasets/df2014.csv')
-    df2014 = pd.read_csv('../datasets/df2014.csv', parse_dates = True, index_col = 'datahora')
-    df2015 = pd.read_csv('../datasets/df2015.csv', parse_dates = True, index_col = 'datahora')
-    df2016 = pd.read_csv('../datasets/df2016.csv', parse_dates = True, index_col = 'datahora')
-    df2017 = pd.read_csv('../datasets/df2017.csv', parse_dates = True, index_col = 'datahora')
-    df2018 = pd.read_csv('../datasets/df2018.csv', parse_dates = True, index_col = 'datahora')
-    df2019 = pd.read_csv('../datasets/df2019.csv', parse_dates = True, index_col = 'datahora')
-    df2020 = pd.read_csv('../datasets/df2020.csv', parse_dates = True, index_col = 'datahora')
-    dict_year = {2014 : df2014, 2015 : df2015, 2016 : df2016, 2017 : df2017 , 2018 : df2018 , 2019 : df2019, 2020 : df2020}
-    if condition == 'all':
-        return dict_year
+	df2014 = pd.read_csv('datasets/df2014.csv', parse_dates = True, index_col = 'Unnamed: 0')
+	df2015 = pd.read_csv('datasets/df2015.csv', parse_dates = True, index_col = 'Unnamed: 0')
+	df2016 = pd.read_csv('datasets/df2016.csv', parse_dates = True, index_col = 'Unnamed: 0')
+	df2017 = pd.read_csv('datasets/df2017.csv', parse_dates = True, index_col = 'Unnamed: 0')
+	df2018 = pd.read_csv('datasets/df2018.csv', parse_dates = True, index_col = 'Unnamed: 0')
+	df2019 = pd.read_csv('datasets/df2019.csv', parse_dates = True, index_col = 'Unnamed: 0')
+	df2020 = pd.read_csv('datasets/df2020.csv', parse_dates = True, index_col = 'Unnamed: 0')
 
-dict_year = data('all')
+	df2014_loc = pd.read_csv('datasets/df2014_loc.csv')
+	df2015_loc = pd.read_csv('datasets/df2015_loc.csv')
+	df2016_loc = pd.read_csv('datasets/df2016_loc.csv')
+	df2017_loc = pd.read_csv('datasets/df2017_loc.csv')
+	df2018_loc = pd.read_csv('datasets/df2018_loc.csv')
+	df2019_loc = pd.read_csv('datasets/df2019_loc.csv')
+	df2020_loc = pd.read_csv('datasets/df2020_loc.csv')
 
+	dict_year = {2014 : df2014, 2015 : df2015, 2016 : df2016, 2017 : df2017 , 2018 : df2018 , 2019 : df2019, 2020 : df2020}
+	dict_year_loc = {2014 : df2014_loc, 2015 : df2015_loc, 2016 : df2016_loc, 2017 : df2017_loc , 2018 : df2018_loc , 2019 : df2019_loc, 2020 : df2020_loc}
+
+	if condition == 'all':
+		return dict_year, dict_year_loc
+
+dict_year = data('all')[0]
+dict_year_loc = data('all')[1]
+dfmap = pd.read_csv('datasets/dfmap.csv')
 
 
 ## Creating the  variables for the biome plot
@@ -39,48 +50,64 @@ dict_year = data('all')
 ## Starting the app configuration
 
 st.subheader('Choose an **year** to be analyzed')
-year = st.slider('Years', min_value = 2014, max_value = 2020) ## Getting the year
 
-@st.cache
-def df_function(year):
-    return dict_year[year]					      ## Getting the corresponding dataframe in cache
+year = st.slider('Years', min_value = 2014, max_value = 2020) ## Getting the year by the use
 
-df = df_function(year)					         ## Getting the corresponding dataframe
-
-@st.cache
-def fire_brazil_cache(df, year):
-    return FireBrazil(df, year)
-fire_brazil = fire_brazil_cache(df, year)
-
-st.write('### The fire distribution in Brazil during {}'.format(year))
+@st.cache(suppress_st_warning=True)
+def first_figure(year):
+	fire_brazil_loc = FireBrazil(dict_year_loc[year], year)
+	st.write('### The fire distribution in Brazil during {}'.format(year))
+	fig, (ax1, ax2) = plt.subplots(1, 2, figsize = (16,6))
+	fire_brazil_loc.biomes_distribution(ax1, dfmap)
+	fire_map = fire_brazil_loc.fire_map_dist(ax2)
+	plt.colorbar(fire_map[1], ax = ax2)
+	fig1 = st.pyplot(fig)
 
 
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize = (16,6))
-
-fire_brazil.biomes_distribution(ax1, dict_year[2014])
-fire_map = fire_brazil.fire_map_dist(ax2)
-
-plt.colorbar(fire_map[1], ax = ax2)
-
-fig1 = st.pyplot(fig)
-
+first_figure(year)
 
 st.write('### Individual biome analysis in {}'.format(year))
 
 
 biome = st.selectbox('Brazilian biomes', ['Amazonia', 'Caatinga', 'Cerrado','Mata Atlantica', 'Pampa', 'Pantanal'])
 
-## Creating the composed plot
+## Creating the composed plot using gridspec
 
-fig = plt.figure(constrained_layout = False, figsize = (28, 12))
-gs = fig.add_gridspec(nrows = 6, ncols = 2, left = 0.05, right = 0.48, wspace = 0.2, hspace = 1.5)
-ax1 = fig.add_subplot(gs[:3, :1])
-ax2 = fig.add_subplot(gs[:3, 1:])
-ax3 = fig.add_subplot(gs[3:, :])
+@st.cache(suppress_st_warning=True)
+def second_figure(year, biome):
+	fire_brazil = FireBrazil(dict_year[year], year)
+	fire_brazil_loc = FireBrazil(dict_year_loc[year], year)
 
-fire_brazil.pie_chart_year(biome, ax = ax1)
-fire_biome_plot = fire_brazil.fire_biome(biome, ax2, dict_year[2014])[1]
-fig.colorbar(fire_biome_plot, ax = ax2)
-fire_brazil.timeseries_year_biome(biome, ax = ax3, position = [0.08, 0.34, .08, .12])
+	fig = plt.figure(constrained_layout = False, figsize = (28, 12))
+	gs = fig.add_gridspec(nrows = 6, ncols = 2, left = 0.05, right = 0.48, wspace = 0.2, hspace = 1.5)
+	ax1 = fig.add_subplot(gs[:3, :1])
+	ax2 = fig.add_subplot(gs[:3, 1:])
+	ax3 = fig.add_subplot(gs[3:, :])
 
-st.pyplot(fig)
+	fire_brazil.pie_chart_year(biome, ax = ax1)
+	fire_biome_plot = fire_brazil_loc.fire_biome(biome, ax2, dfmap)[1]
+	fig.colorbar(fire_biome_plot, ax = ax2)
+	fire_brazil.timeseries_year_biome(biome, ax = ax3, position = [0.08, 0.34, .08, .12])
+
+	st.pyplot(fig)
+
+
+second_figure(year, biome)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
