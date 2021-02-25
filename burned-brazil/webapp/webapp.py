@@ -17,21 +17,21 @@ st.title('Fire events in Brazil app')
 
 @st.cache
 def data(condition):
-	df2014 = pd.read_csv('datasets/df2014.csv', parse_dates = True, index_col = 'Unnamed: 0')
-	df2015 = pd.read_csv('datasets/df2015.csv', parse_dates = True, index_col = 'Unnamed: 0')
-	df2016 = pd.read_csv('datasets/df2016.csv', parse_dates = True, index_col = 'Unnamed: 0')
-	df2017 = pd.read_csv('datasets/df2017.csv', parse_dates = True, index_col = 'Unnamed: 0')
-	df2018 = pd.read_csv('datasets/df2018.csv', parse_dates = True, index_col = 'Unnamed: 0')
-	df2019 = pd.read_csv('datasets/df2019.csv', parse_dates = True, index_col = 'Unnamed: 0')
-	df2020 = pd.read_csv('datasets/df2020.csv', parse_dates = True, index_col = 'Unnamed: 0')
+	df2014 = pd.read_csv('df2014.csv', parse_dates = True, index_col = 'Unnamed: 0')
+	df2015 = pd.read_csv('df2015.csv', parse_dates = True, index_col = 'Unnamed: 0')
+	df2016 = pd.read_csv('df2016.csv', parse_dates = True, index_col = 'Unnamed: 0')
+	df2017 = pd.read_csv('df2017.csv', parse_dates = True, index_col = 'Unnamed: 0')
+	df2018 = pd.read_csv('df2018.csv', parse_dates = True, index_col = 'Unnamed: 0')
+	df2019 = pd.read_csv('df2019.csv', parse_dates = True, index_col = 'Unnamed: 0')
+	df2020 = pd.read_csv('df2020.csv', parse_dates = True, index_col = 'Unnamed: 0')
 
-	df2014_loc = pd.read_csv('datasets/df2014_loc.csv')
-	df2015_loc = pd.read_csv('datasets/df2015_loc.csv')
-	df2016_loc = pd.read_csv('datasets/df2016_loc.csv')
-	df2017_loc = pd.read_csv('datasets/df2017_loc.csv')
-	df2018_loc = pd.read_csv('datasets/df2018_loc.csv')
-	df2019_loc = pd.read_csv('datasets/df2019_loc.csv')
-	df2020_loc = pd.read_csv('datasets/df2020_loc.csv')
+	df2014_loc = pd.read_csv('df2014_loc.csv')
+	df2015_loc = pd.read_csv('df2015_loc.csv')
+	df2016_loc = pd.read_csv('df2016_loc.csv')
+	df2017_loc = pd.read_csv('df2017_loc.csv')
+	df2018_loc = pd.read_csv('df2018_loc.csv')
+	df2019_loc = pd.read_csv('df2019_loc.csv')
+	df2020_loc = pd.read_csv('df2020_loc.csv')
 
 	dict_year = {2014 : df2014, 2015 : df2015, 2016 : df2016, 2017 : df2017 , 2018 : df2018 , 2019 : df2019, 2020 : df2020}
 	dict_year_loc = {2014 : df2014_loc, 2015 : df2015_loc, 2016 : df2016_loc, 2017 : df2017_loc , 2018 : df2018_loc , 2019 : df2019_loc, 2020 : df2020_loc}
@@ -41,7 +41,7 @@ def data(condition):
 
 dict_year = data('all')[0]
 dict_year_loc = data('all')[1]
-dfmap = pd.read_csv('datasets/dfmap.csv')
+dfmap = pd.read_csv('dfmap.csv')
 
 
 ## Creating the  variables for the biome plot
