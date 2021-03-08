@@ -9,6 +9,8 @@ PROVAS E GABARITOS/
 ## Partial datasets
 X.csv
 X_min.csv
+X_ohe.csv
+
 
 .ipynb_checkpoints/
 y_ch.csv
