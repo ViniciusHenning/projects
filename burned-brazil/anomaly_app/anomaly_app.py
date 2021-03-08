@@ -19,8 +19,9 @@ it also corrects the anomaly(ies) as described [here](https://github.com/Viniciu
 st.sidebar.header("Choose a dataset")
 file = st.sidebar.file_uploader(label = 'Upload your file here')
 
-freq_names = ['Daily', 'Weekly', 'Monthly']
-freq_dict = {'Daily' : 365, 'Weekly' : 52, 'Monthly' : 12}
+freq_names = ['Daily', 'Semimonthly', 'Monthly']
+#freq_dict = {'Daily' : 365, 'Weekly' : 52, 'Monthly' : 12}
+freq_dict = {'Daily' : 365, 'Semimonthly' : 24, 'Monthly' : 12}
 st.sidebar.header('Choose the Frequency of your data')
 freq = st.sidebar.selectbox('Options', freq_names)
 
